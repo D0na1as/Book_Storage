@@ -1,27 +1,46 @@
 package com.book.storage.Model;
 
-import org.springframework.stereotype.Component;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.json.simple.JSONObject;
 
-@Component
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Book {
 
-    private long barcode;
+    @JsonProperty("Barcode")
+    private String barcode;
+    @JsonProperty("Title")
     private String name;
+    @JsonProperty("Author")
     private String author;
+    @JsonProperty("Quantity")
     private int quantity;
+    @JsonProperty("Price per Unit")
     private double unitPrice;
-    private int year=0;
-    private int scIndex=0;
+    @JsonProperty("Release Year")
+    private Integer year;
+    @JsonProperty("Science Index")
+    private Integer scIndex;
 
     public Book() {
     }
 
-    public Book(long barcode, String name, String author, int quantity, double unitPrice) {
+    public Book(String barcode, String name, String author, int quantity, double unitPrice) {
         this.barcode = barcode;
         this.name = name;
         this.author = author;
         this.quantity = quantity;
         this.unitPrice = unitPrice;
+    }
+
+    public String getBarcode() {
+        return barcode;
+    }
+
+    public void setBarcode(String barcode) {
+        this.barcode = barcode;
     }
 
     public String getName() {
@@ -40,14 +59,6 @@ public class Book {
         this.author = author;
     }
 
-    public long getBarcode() {
-        return barcode;
-    }
-
-    public void setBarcode(long barcode) {
-        this.barcode = barcode;
-    }
-
     public int getQuantity() {
         return quantity;
     }
@@ -64,19 +75,33 @@ public class Book {
         this.unitPrice = unitPrice;
     }
 
-    public int getYear() {
+    public Integer getYear() {
         return year;
     }
 
-    public void setYear(int year) {
+    public void setYear(Integer year) {
         this.year = year;
     }
 
-    public int getScIndex() {
+    public Integer getScIndex() {
         return scIndex;
     }
 
-    public void setScIndex(int scIndex) {
+    public void setScIndex(Integer scIndex) {
         this.scIndex = scIndex;
+    }
+
+    public JSONObject toJSONObject () {
+
+        JSONObject json = new JSONObject();
+        json.put("Barcode", barcode);
+        json.put("Title", name);
+        json.put("Author", author);
+        json.put("Quantity", quantity);
+        json.put("Price per Unit", unitPrice);
+        json.put("Release Year", year);
+        json.put("Science Index", scIndex);
+
+        return json;
     }
 }

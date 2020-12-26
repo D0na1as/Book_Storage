@@ -16,8 +16,14 @@
 
     <input type="submit" />
 </form>
-<form th:action="@{/get_book}"  method="get">
+<form th:action="@{/get_book/}"  method="get">
+    <input type="number" th:name="barcode" />
+    <input type="submit" />
+</form>
+<form th:action="@{/update}"  method="post">
     <input type="number" name="barcode" />
+    <input type="text" name="field"  />
+    <input type="text" name="value"  />
 
     <input type="submit" />
 </form>

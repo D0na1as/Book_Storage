@@ -1,19 +1,21 @@
 package com.book.storage.Controller;
 
 import com.book.storage.Model.Book;
+import com.book.storage.Service.BookService;
+import org.json.simple.parser.ParseException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
-import java.io.*;
-import java.util.Scanner;
+import java.io.IOException;
 
 @Controller
 public class MainController {
 
-    private String database = "src/main/resources/static/database";
+    @Autowired
+    BookService bookService;
 
     @GetMapping("/")
     public String index(Model model) {
@@ -21,6 +23,7 @@ public class MainController {
         return "index";
     }
 
+    //Adding book to the system
     @PostMapping("/add_book")
     public String addBook(@RequestParam String barcode,
                           @RequestParam String name,
@@ -28,44 +31,48 @@ public class MainController {
                           @RequestParam String quantity,
                           @RequestParam String unitPrice,
                           @RequestParam String year,
-                          @RequestParam String scIndex) throws IOException {
+                          @RequestParam String scIndex) throws IOException, ParseException {
 
-        Book newBook = new Book(Long.parseLong(barcode), name, author, Integer.parseInt(quantity), Double.parseDouble(unitPrice));
-        addToFile(newBook);
+        Book book = new Book(barcode, name, author, Integer.parseInt(quantity), Double.parseDouble(unitPrice));
 
-        return "index";
-    }
-
-    @GetMapping("/get_book")
-    public String getBook(@RequestParam String barcode) throws FileNotFoundException {
-
-        return "index";
-
-    }
-
-    public void addToFile(Book book) throws IOException {
-
-        BufferedWriter writer = new BufferedWriter(new FileWriter(database, true));
-        writer.append(String.valueOf(book.getBarcode()))
-                .append(" ").append(book.getName())
-                .append(" ").append(book.getName())
-                .append(" ").append(book.getAuthor())
-                .append(" ").append(String.valueOf(book.getQuantity()))
-                .append(" ").append(String.valueOf(book.getUnitPrice()))
-                .append(" ").append(String.valueOf(book.getScIndex())).append(System.lineSeparator());
-        writer.close();
-    }
-
-    private String findBook(String barcode) throws FileNotFoundException {
-        Scanner scan = new Scanner(new File(database));
-        String result = "";
-        while (scan.hasNext()) {
-            String line = scan.nextLine().toLowerCase().toString();
-            if (line.contains(barcode)) {
-                System.out.println(line);
-                result += line + " ";
+        if (!year.equals("")) {
+            int date = Integer.parseInt(year);
+            if (date<=1900) {
+                book.setYear(Integer.parseInt(year));
             }
         }
-        return result;
+        if (scIndex!=null && !scIndex.equals("")) {
+            int index = Integer.parseInt(scIndex);
+            if (index>=1 && index<=10) {
+                book.setScIndex(Integer.parseInt(scIndex));
+            }
+        }
+        bookService.addBook(book);
+
+        return "index";
+    }
+    //Getting book by barcode
+    @RequestMapping(value = "/get_book/{barcode}", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public String getBook(@PathVariable String barcode) throws IOException, ParseException {
+        return bookService.getBook(barcode);
+
+    }
+    //Updating information field of book determined by barcode
+    @PostMapping("/update")
+    @ResponseBody
+    public String updateBook(@RequestParam("barcode") String barcode,
+                             @RequestParam("field") String field,
+                             @RequestParam("value") String value) throws IOException, ParseException {
+        bookService.setField(barcode, field, value);
+        return "index";
+    }
+
+   //Calculate total price of specific book by barcode
+    @GetMapping("/calculate/{barcode}")
+    @ResponseBody
+    public String calculatePrice(@PathVariable String barcode) throws IOException, ParseException {
+        return bookService.calculatePrice(barcode);
     }
 }

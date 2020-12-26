@@ -1,2 +1,43 @@
-1 1 1 1 1 1.0 0
-2 2 2 2 2 2.0 0
+[ {
+  "Price per Unit" : 2.0,
+  "Barcode" : "2",
+  "Title" : "2",
+  "Author" : "2",
+  "Quantity" : 2
+}, {
+  "Price per Unit" : 2.0,
+  "Barcode" : "2",
+  "Title" : "2",
+  "Author" : "2",
+  "Quantity" : 2
+}, {
+  "Price per Unit" : 2.0,
+  "Release Year" : 222,
+  "Barcode" : "2",
+  "Title" : "2",
+  "Author" : "2",
+  "Quantity" : 2,
+  "Science Index" : 22
+}, {
+  "Price per Unit" : 2.0,
+  "Release Year" : 2222,
+  "Barcode" : "2",
+  "Title" : "2",
+  "Author" : "2",
+  "Quantity" : 2,
+  "Science Index" : 22
+}, {
+  "Price per Unit" : 1.0,
+  "Release Year" : 111,
+  "Barcode" : "1",
+  "Title" : "1",
+  "Author" : "How Do You Do",
+  "Quantity" : 1
+}, {
+  "Price per Unit" : 1.0,
+  "Barcode" : "1",
+  "Title" : "1",
+  "Author" : "How Do You Do",
+  "Quantity" : 1,
+  "Science Index" : 1
+} ]
