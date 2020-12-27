@@ -16,4 +16,5 @@ public class BeanConfig {
 
         return mapper;
     }
+
 }

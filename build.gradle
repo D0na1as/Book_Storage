@@ -19,8 +19,11 @@ dependencies {
 	compile group: 'com.jayway.jsonpath', name: 'json-path', version: '2.5.0'
 	// https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple
 	compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1'
-	// https://mvnrepository.com/artifact/org.hibernate/hibernate-validator
-	compile group: 'org.hibernate', name: 'hibernate-validator', version: '7.0.0.Final'
+	// https://mvnrepository.com/artifact/javax.validation/validation-api
+	compile group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
+	// https://mvnrepository.com/artifact/org.glassfish.main.common/glassfish-api
+	compile group: 'org.glassfish.main.common', name: 'glassfish-api', version: '6.0.0-RC3'
+
 	implementation 'com.google.code.gson:gson:2.8.6'
 
 }

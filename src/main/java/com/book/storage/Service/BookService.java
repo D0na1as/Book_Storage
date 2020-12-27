@@ -2,6 +2,7 @@ package com.book.storage.Service;
 
 import com.book.storage.Model.Book;
 import com.book.storage.Repository.BookRepo;
+import com.book.storage.Utility.Util;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.simple.JSONArray;
@@ -12,21 +13,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 @Service
 public class BookService {
 
     @Autowired
     BookRepo bookRepo;
-
-    private final String database = "src/main/resources/static/database";
-
     @Autowired
     ObjectMapper mapper;
+    @Autowired
+    Util util;
 
+    private final String database = "src/main/resources/static/database";
     private final JSONParser parser = new JSONParser();
 
 
@@ -34,9 +32,36 @@ public class BookService {
         bookRepo.addBook(book);
     }
 
-    public String getBook (String barcode) throws ParseException, IOException {
+    //Add book to database when book provided in JSON format
+    private void addJSONBook(JSONObject jObject, JSONArray jArray) throws IOException, ParseException {
+        bookRepo.addBookJSON(jObject, jArray);
+    }
+
+    public Book getBook(String barcode) throws ParseException, IOException {
+
+        JSONArray array = getBookJSON(barcode);
+        JSONObject jObject = (JSONObject) array.get(0);
+        Book book = mapper.readValue(jObject.toJSONString(), new TypeReference<Book>() {
+        });
+
+        return book;
+    }
+
+    public String getBookString(String barcode) throws ParseException, IOException {
 
         return bookRepo.getBook(barcode);
+    }
+
+
+    //Get book from database in JSON format
+    private JSONArray getBookJSON (String barcode) throws IOException, ParseException {
+
+        String book = bookRepo.getBook(barcode);
+        if (book!=null){
+            return (JSONArray) parser.parse(book);
+        } else  {
+            return null;
+        }
     }
 
     public void setField(String barcode, String field, String value) throws IOException, ParseException {
@@ -49,27 +74,27 @@ public class BookService {
         switch(field.toLowerCase().trim()) {
             case "title":
                 jObject.replace("Title", value.trim());
-                saveJSONBook(jObject, jArray);
+                addJSONBook(jObject, jArray);
                 break;
             case "author":
                 jObject.replace("Author", value.trim());
-                saveJSONBook(jObject, jArray);
+                addJSONBook(jObject, jArray);
                 break;
             case "quantity":
                 jObject.replace("Quantity", value.trim());
-                saveJSONBook(jObject, jArray);
+                addJSONBook(jObject, jArray);
                 break;
             case "price":
                 jObject.replace("Price", value.trim());
-                saveJSONBook(jObject, jArray);
+                addJSONBook(jObject, jArray);
                 break;
             case "year":
                 jObject.replace("Year", value.trim());
-                saveJSONBook(jObject, jArray);
+                addJSONBook(jObject, jArray);
                 break;
             case "index":
                 jObject.replace("Index", value.trim());
-                saveJSONBook(jObject, jArray );
+                addJSONBook(jObject, jArray );
                 break;
 
         }
@@ -77,38 +102,26 @@ public class BookService {
 
     public String calculatePrice(String barcode) throws IOException, ParseException {
 
-        JSONArray jBook = getBookJSON(barcode);
-        JSONObject jObject = (JSONObject) jBook.get(0);
-        Book book = mapper.readValue(jObject.toJSONString(), new TypeReference<Book>() {});
-        double price = 0;
-        price = book.getQuantity() * book.getUnitPrice();
+        if (getBookJSON(barcode)!=null) {
+            Book book = getBook(barcode);
+            double price = 0;
+            price = book.getQuantity() * book.getUnitPrice();
 
-        if (book.getYear()!=null) {
-            price = price * (getDate() - book.getYear());
+            if (book.getYear() != null) {
+                price = price * (util.getDate() - book.getYear());
+                return String.format("%1$,.2f", price);
+            } else if (book.getScIndex() != null) {
+                price = price * book.getScIndex();
+                return String.format("%1$,.2f", price);
+            }
             return String.format("%1$,.2f", price);
-        } else if (book.getScIndex()!=null) {
-            price = price * book.getScIndex();
-            return String.format("%1$,.2f", price);
+        } else {
+            return null;
         }
-            return String.format("%1$,.2f", price);
-    }
 
-    private void saveJSONBook(JSONObject jObject, JSONArray jArray) throws IOException, ParseException {
-        bookRepo.addBookJSON(jObject, jArray);
-    }
-
-    private JSONArray getBookJSON (String barcode) throws IOException, ParseException {
-         return (JSONArray) parser.parse(bookRepo.getBook(barcode));
     }
 
     private JSONArray getLibrary () throws IOException, ParseException {
         return (JSONArray) parser.parse(bookRepo.getDatabase());
     }
-
-    private int getDate() {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy");
-        Date time = new Date();
-        return Integer.parseInt(dateFormat.format(time));
-    }
-
 }

@@ -10,10 +10,7 @@ import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 
 @Repository
 public class BookRepo {
@@ -23,6 +20,7 @@ public class BookRepo {
     @Autowired
     ObjectMapper mapper;
 
+    //Add Book to database
     public void addBook(Book book) throws IOException, ParseException {
 
         JSONArray library = new JSONArray();
@@ -44,6 +42,8 @@ public class BookRepo {
             e.printStackTrace();
         }
     }
+
+    //Add Book to database when book provided in JSON format
     public void addBookJSON(JSONObject book, JSONArray library) throws IOException, ParseException {
 
         library.add(book);
@@ -58,19 +58,29 @@ public class BookRepo {
         }
     }
 
+    //Get book from database
     public String getBook(String barcode) throws IOException, ParseException {
 
         String json = getDatabase();
+        if (json!=null) {
+            Object dataObject = JsonPath.parse(json).read("$[?(@.Barcode == '" + barcode + "')]");
 
-        Object dataObject = JsonPath.parse(json).read("$[?(@.Barcode == '"+barcode+"')]");
+            json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(dataObject);
 
-        json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(dataObject);
-
-        return json;
+            return json;
+        } else {
+            return null;
+        }
     }
 
+    //Get all database
     public String getDatabase() throws IOException, ParseException {
         JSONParser parser = new JSONParser();
-        return parser.parse(new FileReader(database)).toString();
+        if ((new File(database)).length()>0) {
+            return parser.parse(new FileReader(database)).toString();
+        } else {
+            return null;
+        }
+
     }
 }

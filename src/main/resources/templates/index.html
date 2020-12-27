@@ -6,25 +6,30 @@
 </head>
 <body>
 <form th:action="@{/add_book}"  method="post">
-    <input type="number" name="barcode" />
+    <input type="number" step="0.01"  name="barcode" />
     <input type="text" name="name"  />
     <input type="text" name="author"  />
-    <input type="number" name="quantity" />
-    <input type="number" name="unitPrice" />
-    <input type="number" name="year" />
-    <input type="number" name="scIndex" />
+    <input type="number" step="0.01" name="quantity" />
+    <input type="number" step="0.01" name="unitPrice" />
+    <input type="number" step="0.01" name="year" />
+    <input type="number" step="0.01" name="scIndex" />
 
     <input type="submit" />
 </form>
-<form th:action="@{/get_book/}"  method="get">
-    <input type="number" th:name="barcode" />
+<form th:action="@{/get_book}" method="get">
+    <input type="number"  name="barcode" />
     <input type="submit" />
 </form>
+
 <form th:action="@{/update}"  method="post">
     <input type="number" name="barcode" />
     <input type="text" name="field"  />
     <input type="text" name="value"  />
 
+    <input type="submit" />
+</form>
+<form th:action="@{/calculate}" method="get">
+    <input type="number" name="barcode" />
     <input type="submit" />
 </form>
 </body>
