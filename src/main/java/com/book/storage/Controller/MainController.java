@@ -3,7 +3,6 @@ package com.book.storage.Controller;
 import com.book.storage.Model.Book;
 import com.book.storage.Service.BookService;
 import com.book.storage.Utility.Util;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -23,8 +22,9 @@ public class MainController {
     BookService bookService;
     @Autowired
     Util util;
-    @Autowired
-    ObjectMapper mapper;
+    //Saving path for checking purposes
+    private final String getBook = "src/main/resources/static/get_book.txt";
+    private final String price = "src/main/resources/static/price.txt";
 
     @GetMapping("/")
     public String index(Model model) {
@@ -42,7 +42,7 @@ public class MainController {
                            @RequestParam String year,
                            @RequestParam String scIndex) throws IOException, ParseException {
 
-        if (bookService.getBookString(barcode)==null) {
+        if (bookService.getBook(barcode)==null) {
             if (util.validateInt(quantity) && util.validateDouble(unitPrice)) {
                 Book book = new Book(barcode, name, author, Integer.parseInt(quantity),
                         Double.parseDouble(unitPrice));
@@ -61,24 +61,24 @@ public class MainController {
                     }
                 }
                 bookService.addBook(book);
-                return "index";
 
-            } else {
-                return "index";
             }
         } else {
             Book book  = bookService.getBook(barcode);
             book.setQuantity(book.getQuantity()+1);
             bookService.setField(barcode, "quantity", String.valueOf(book.getQuantity()));
-            return "index";
         }
+        return "index";
     }
 
     //Getting book by barcode
     @GetMapping(value = "/get_book", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public String getBook(@RequestParam("barcode") String barcode) throws IOException, ParseException {
-        return bookService.getBookString(barcode);
+        String json = bookService.getBookString(barcode);
+        //For checking
+        util.saveFile(getBook,json);
+        return json;
 
     }
 
@@ -88,8 +88,7 @@ public class MainController {
     public String updateBook(@RequestParam("barcode") String barcode,
                              @RequestParam("field") String field,
                              @RequestParam("value") String value) throws IOException, ParseException {
-
-        if (bookService.getBookString(barcode)!=null) {
+        if (bookService.getBook(barcode)!=null) {
             bookService.setField(barcode, field, value);
             return "Success";
 
@@ -102,8 +101,11 @@ public class MainController {
     @GetMapping("/calculate")
     @ResponseBody
     public String calculatePrice(@RequestParam String barcode) throws IOException, ParseException {
-        if (bookService.getBookString(barcode)!=null) {
-            return bookService.calculatePrice(barcode);
+        if (bookService.getBook(barcode)!=null) {
+            String result = bookService.calculatePrice(barcode);
+            //For checking
+            util.saveFile(price, barcode+": "+result);
+            return result;
         } else {
             return "Error";
         }

@@ -2,35 +2,72 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>Book Storage</title>
+    <style>
+    input {
+        display: block;
+        margin: 10px 10px;
+        }
+    html, body {
+          height: 100%;
+          width: 100%;
+          margin: 0;
+        }
+
+    th { text-align: top; }
+</style>
 </head>
 <body>
-<form th:action="@{/add_book}"  method="post">
-    <input type="number" step="0.01"  name="barcode" />
-    <input type="text" name="name"  />
-    <input type="text" name="author"  />
-    <input type="number" step="0.01" name="quantity" />
-    <input type="number" step="0.01" name="unitPrice" />
-    <input type="number" step="0.01" name="year" />
-    <input type="number" step="0.01" name="scIndex" />
-
-    <input type="submit" />
-</form>
-<form th:action="@{/get_book}" method="get">
-    <input type="number"  name="barcode" />
-    <input type="submit" />
-</form>
-
-<form th:action="@{/update}"  method="post">
-    <input type="number" name="barcode" />
-    <input type="text" name="field"  />
-    <input type="text" name="value"  />
-
-    <input type="submit" />
-</form>
-<form th:action="@{/calculate}" method="get">
-    <input type="number" name="barcode" />
-    <input type="submit" />
-</form>
+<section class="jumbotron">
+    <div class="container">
+        <table class="table table-hover">
+            <thead>
+                <th scope="col" class="align-top">New Book</th>
+                <th scope="col" class="align-top">Get Book</th>
+                <th scope="col" class="align-top">Update Book</th>
+                <th scope="col" class="align-top">Calculate Book's price</th>
+            </thead>
+            <tbody>
+                <th scope="col" class="align-top">
+                    <form th:action="@{/add_book}" method="post">
+                        <input type="number" step="0.01"  name="barcode" placeholder="Barcode" />
+                        <input type="text" name="name"  placeholder="Title"/>
+                        <input type="text" name="author"  placeholder="Author"/>
+                        <input type="number" step="0.01" name="quantity"  placeholder="Quantity" />
+                        <input type="number" step="0.01" name="unitPrice"  placeholder="Unit price"/>
+                        <input type="number" step="0.01" name="year"  placeholder="Year"/>
+                        <input type="number" step="0.01" name="scIndex"  placeholder="Science index"/>
+                        <input type="submit" class="btn btn-primary"/>
+                    </form>
+                </th>
+                <th class="align-top">
+                    <form th:action="@{/get_book}" method="get">
+                        <input type="number"  name="barcode" placeholder="Barcode"/>
+                        <input type="submit" class="btn btn-primary" />
+                    </form>
+                </th>
+                <th class="align-top">
+                    <form th:action="@{/update}"  method="post">
+                        <input type="number" name="barcode" placeholder="Barcode"/>
+                        <input type="text" name="field" placeholder="Enter field"/>
+                        <input type="text" name="value"  placeholder="Value"/>
+                        <input type="submit" class="btn btn-primary" />
+                    </form>
+                </th>
+                <th class="align-top">
+                    <form th:action="@{/calculate}" method="get">
+                        <input type="number" name="barcode" placeholder="Barcode" />
+                        <input type="submit" class="btn btn-primary" />
+                    </form>
+                </th>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 </body>
 </html>

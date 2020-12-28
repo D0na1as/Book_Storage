@@ -2,6 +2,7 @@ package com.book.storage.Utility;
 
 import org.springframework.stereotype.Component;
 
+import java.io.FileWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -33,6 +34,15 @@ public class Util {
         DateFormat dateFormat = new SimpleDateFormat("yyyy");
         Date time = new Date();
         return Integer.parseInt(dateFormat.format(time));
+    }
+    public void saveFile (String path, String content) {
+        try {
+            FileWriter fileWriter = new FileWriter(path);
+            fileWriter.write(content);
+            fileWriter.flush();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

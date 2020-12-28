@@ -40,11 +40,14 @@ public class BookService {
     public Book getBook(String barcode) throws ParseException, IOException {
 
         JSONArray array = getBookJSON(barcode);
-        JSONObject jObject = (JSONObject) array.get(0);
-        Book book = mapper.readValue(jObject.toJSONString(), new TypeReference<Book>() {
-        });
-
-        return book;
+        if (array.size()>0) {
+            JSONObject jObject = (JSONObject) array.get(0);
+            Book book = mapper.readValue(jObject.toJSONString(), new TypeReference<Book>() {
+            });
+            return book;
+        } else {
+            return null;
+        }
     }
 
     public String getBookString(String barcode) throws ParseException, IOException {
@@ -102,7 +105,7 @@ public class BookService {
 
     public String calculatePrice(String barcode) throws IOException, ParseException {
 
-        if (getBookJSON(barcode)!=null) {
+        if (getBook(barcode)!=null) {
             Book book = getBook(barcode);
             double price = 0;
             price = book.getQuantity() * book.getUnitPrice();
