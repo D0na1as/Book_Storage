@@ -23,7 +23,11 @@ dependencies {
 	compile group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
 	// https://mvnrepository.com/artifact/org.glassfish.main.common/glassfish-api
 	compile group: 'org.glassfish.main.common', name: 'glassfish-api', version: '6.0.0-RC3'
-
 	implementation 'com.google.code.gson:gson:2.8.6'
+}
 
+bootJar {
+	manifest {
+		attributes 'Start-Class': 'com.book.storage.StorageApplication'
+	}
 }
