@@ -40,7 +40,7 @@ public class BookService {
     public Book getBook(String barcode) throws ParseException, IOException {
 
         JSONArray array = getBookJSON(barcode);
-        if (array.size()>0) {
+        if (array!=null && array.size()>0 ) {
             JSONObject jObject = (JSONObject) array.get(0);
             Book book = mapper.readValue(jObject.toJSONString(), new TypeReference<Book>() {
             });
@@ -67,7 +67,7 @@ public class BookService {
         }
     }
 
-    public void setField(String barcode, String field, String value) throws IOException, ParseException {
+    public boolean setField(String barcode, String field, String value) throws IOException, ParseException {
 
         JSONArray jArray = getBookJSON(barcode);
         JSONObject jObject = (JSONObject) jArray.get(0);
@@ -78,28 +78,29 @@ public class BookService {
             case "title":
                 jObject.replace("Title", value.trim());
                 addJSONBook(jObject, jArray);
-                break;
+                return true;
             case "author":
                 jObject.replace("Author", value.trim());
                 addJSONBook(jObject, jArray);
-                break;
+                return true;
             case "quantity":
                 jObject.replace("Quantity", value.trim());
                 addJSONBook(jObject, jArray);
-                break;
+                return true;
             case "price":
                 jObject.replace("Price", value.trim());
                 addJSONBook(jObject, jArray);
-                break;
+                return true;
             case "year":
                 jObject.replace("Year", value.trim());
                 addJSONBook(jObject, jArray);
-                break;
+                return true;
             case "index":
                 jObject.replace("Index", value.trim());
                 addJSONBook(jObject, jArray );
-                break;
-
+                return true;
+            default:
+                return false;
         }
     }
 

@@ -75,10 +75,14 @@ public class MainController {
     @GetMapping(value = "/get_book", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public String getBook(@RequestParam("barcode") String barcode) throws IOException, ParseException {
-        String json = bookService.getBookString(barcode);
-        //For checking
-        util.saveFile(getBook,json);
-        return json;
+        if (bookService.getBook(barcode)!=null) {
+            String json = bookService.getBookString(barcode);
+            //For checking
+            util.saveFile(getBook, json);
+            return json;
+        } else {
+            return "Error";
+        }
 
     }
 
@@ -89,8 +93,12 @@ public class MainController {
                              @RequestParam("field") String field,
                              @RequestParam("value") String value) throws IOException, ParseException {
         if (bookService.getBook(barcode)!=null) {
-            bookService.setField(barcode, field, value);
-            return "Success";
+            boolean result = bookService.setField(barcode, field, value);
+            if(result) {
+                return "Success";
+            } else {
+                return "Error";
+            }
 
         } else {
             return "Error";
